@@ -38,7 +38,7 @@
 		name: 'App',
 		data() {
 			return {	
-				money: 0,
+				money: 10000,
                 moneyButtonCost: 5,
                 buttonButtonCost: 30,
                 doubleCost: 100,
@@ -61,7 +61,7 @@
                 const ComponentClass = Vue.extend(ButtonButton)
                 const instance = new ComponentClass({
                     propsData: {
-                        cooldown:8000 * (Math.random() * (0.3) + 0.7),
+                        cooldown:"5000",
                         speed: this.fillingSpeed,
                         newMoneyButton: this.newMoneyButton,
                         top: `${Math.random() * 100}%`,
@@ -77,7 +77,7 @@
                     return;
                 }
                 this.money -= this.doubleCost;
-                this.doubleCost = Math.floor(this.doubleCost * 2);
+                this.doubleCost = Math.floor(this.doubleCost * 4);
                 this.fillingSpeed *= 2;
             },         
             newMoneyButton: function(paid = true) {
@@ -92,11 +92,15 @@
                 const ComponentClass = Vue.extend(ButtonResource)
                 const instance = new ComponentClass({
                     propsData: {
-                        cooldown:"1500",
-                        speed: this.fillingSpeed,
+                        cooldown:"1500",                        
                         addMoney: this.addMoney,
                         top: `${Math.random() * 100}%`,
                         left: `${Math.random() * 90}%`,
+                    },
+                    computed: {
+                        speed: function() {
+                            return this.fillingSpeed;
+                        }
                     }
                 })
                 instance.$mount();

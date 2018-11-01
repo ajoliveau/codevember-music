@@ -59,7 +59,7 @@
 
 				this.onCooldown = true;
 				this.durationRemaining = this.cooldown;
-				this.width = 100;
+				this.width = 0;
 				this.$bind(`ButtonButton`, this.update);
 						
 			},          
@@ -68,9 +68,9 @@
 				if (this.durationRemaining <= 0) {
                     this.newMoneyButton(false);
 					this.durationRemaining = this.cooldown;
-                    this.width = 100;
+                    this.width = 0;
 				} else {					
-					this.width = this.durationRemaining / this.cooldown * 100;
+					this.width = (this.cooldown - this.durationRemaining) / this.cooldown  * 100;
 				}
 			}
 		}
