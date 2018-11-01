@@ -2,23 +2,19 @@
 	<div id="app">
 		<div class="columns">
 			<div class="column">				
-				<ButtonResource resource="cardboard" label="Rummage in bins" cooldownTime=1000 ></ButtonResource>
-				<br/>
-				<ButtonResource resource="tape" label="Rummage in bins" cooldownTime=2000 ></ButtonResource>
-
-
+				<Money v-bind:money="money"></Money>
+                Button Speed : {{ this.fillingSpeed }}x
+                <br/>                
+                <AddMoneyButton v-bind:cost="moneyButtonCost" @newMoneyButton="newMoneyButton"></AddMoneyButton>
+                <br/>
+                <AddButtonButton v-bind:cost="buttonButtonCost" @newButtonButton="newButtonButton"></AddButtonButton>
+                <br/>
+                <DoubleButton v-bind:cost="doubleCost" @doubleButton="doubleButton"></DoubleButton>
+                <br/>
 			</div>
-			<div class="column">
 
-				<RocketBuilder></RocketBuilder>
-
-			</div>
-			
-			<div class="column">
-				Mission Planner Placeholder
-			</div>
-			<div class="column">
-				<LaunchButton></LaunchButton>
+			<div class="column is-four-fifths" ref="listResources">
+                <ButtonResource top="0%" left="0%" cooldown="1500" v-bind:speed="fillingSpeed" v-bind:addMoney="addMoney"></ButtonResource>
 			</div>
 		</div>
 	</div>
@@ -26,10 +22,15 @@
 
 <script>
 
-	import ButtonResource from './components/ButtonResource.vue'
-	import RocketBuilder from './components/RocketBuilder.vue'
-	import LaunchButton from './components/LaunchButton.vue'
-	
+	import Money from './components/Money.vue'
+    import ButtonResource from './components/ButtonResource.vue'
+    import AddMoneyButton from './components/AddMoneyButton.vue'
+    import AddButtonButton from './components/AddButtonButton.vue'
+    import DoubleButton from './components/DoubleButton.vue'
+    import ButtonButton from './components/ButtonButton.vue'
+    
+    
+    import Vue from 'vue'		
 
 	const TICK_RATE = 100; // Tick 10 times per second
 
@@ -37,14 +38,74 @@
 		name: 'App',
 		data() {
 			return {	
-				cardboard: 0,
-				tape: 0,				
+				money: 0,
+                moneyButtonCost: 5,
+                buttonButtonCost: 30,
+                doubleCost: 100,
+                fillingSpeed: 1,
 				timeSinceLastTick: 0,
 				lastFrameTime: 0,
-				binders: []	
+				binders: [],
+                moneyButtons: [],
+                buttonButtons: [],
 			}
 		},
-		methods: {	
+		methods: {	        
+            newButtonButton: function() {
+                if (this.money < this.buttonButtonCost) {
+                    return;
+                }
+                this.money -= this.buttonButtonCost;
+                this.buttonButtonCost = Math.floor(this.buttonButtonCost * 1.5);
+
+                const ComponentClass = Vue.extend(ButtonButton)
+                const instance = new ComponentClass({
+                    propsData: {
+                        cooldown:8000 * (Math.random() * (0.3) + 0.7),
+                        speed: this.fillingSpeed,
+                        newMoneyButton: this.newMoneyButton,
+                        top: `${Math.random() * 100}%`,
+                        left: `${Math.random() * 90}%`,
+                    }
+                })
+                instance.$mount();
+                instance.click();
+                this.$refs.listResources.appendChild(instance.$el)
+            },
+            doubleButton: function() {
+                if (this.money < this.doubleCost) {
+                    return;
+                }
+                this.money -= this.doubleCost;
+                this.doubleCost = Math.floor(this.doubleCost * 2);
+                this.fillingSpeed *= 2;
+            },         
+            newMoneyButton: function(paid = true) {
+                if (paid) {
+                    if (this.money < this.moneyButtonCost) {
+                        return;
+                    }
+                    this.money -= this.moneyButtonCost;
+                    this.moneyButtonCost = Math.floor(this.moneyButtonCost * 1.5);    
+                }
+                
+                const ComponentClass = Vue.extend(ButtonResource)
+                const instance = new ComponentClass({
+                    propsData: {
+                        cooldown:"1500",
+                        speed: this.fillingSpeed,
+                        addMoney: this.addMoney,
+                        top: `${Math.random() * 100}%`,
+                        left: `${Math.random() * 90}%`,
+                    }
+                })
+                instance.$mount();
+                instance.click();
+                this.$refs.listResources.appendChild(instance.$el)
+            },
+            addMoney: function() {
+                this.money++;
+            },
 			bind: function(id, fn) {
 				this.binders.push({id: id, fn: fn});
 			},
@@ -82,9 +143,12 @@
 			window.unbind = this.unbind;
 		},
 		components: {		
-			ButtonResource,
-			RocketBuilder,
-			LaunchButton
+			Money,
+            ButtonResource,
+            AddMoneyButton,
+            DoubleButton,
+            AddButtonButton,
+            ButtonButton,
 		}
 	}
 </script>
@@ -97,5 +161,9 @@
 	text-align: center;
 	/*color: #2c3e50;*/
 	margin-top: 60px;
+}
+.column {
+    height:700px;
+    position:relative;
 }
 </style>

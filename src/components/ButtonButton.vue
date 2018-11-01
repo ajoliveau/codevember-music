@@ -1,7 +1,7 @@
 <template>
-    <div class="button-resource" v-bind:style="style">
-        <div class="button is-medium is-fullwidth" v-on:click="click" :disabled="onCooldown">
-            <div v-if="onCooldown">Money</div>
+    <div class="button-button" v-bind:style="style">
+        <div class="button is-large is-fullwidth" v-on:click="click" :disabled="onCooldown">
+            <div class="text" v-if="onCooldown">Button</div>
             <div v-else>Click me !</div>
             <div class="cooldown" v-bind:style="{ width: width + '%' }">                
             </div>
@@ -12,10 +12,10 @@
 <script>
 
 	export default {
-		name: 'ButtonResource',
+		name: 'ButtonButton',
 		props: {					
 			cooldown: {
-				type: String,
+				type: Number,
 				required: true
 			},
             speed: {
@@ -23,7 +23,7 @@
                 required: true
             },
 
-            addMoney: {
+            newMoneyButton: {
                 type: Function,
                 required: true
             },
@@ -60,13 +60,13 @@
 				this.onCooldown = true;
 				this.durationRemaining = this.cooldown;
 				this.width = 100;
-				this.$bind(`Button`, this.update);
+				this.$bind(`ButtonButton`, this.update);
 						
 			},          
 			update: function( deltaTime ) {
 				this.durationRemaining -= deltaTime  * this.speed;
 				if (this.durationRemaining <= 0) {
-                    this.addMoney();
+                    this.newMoneyButton(false);
 					this.durationRemaining = this.cooldown;
                     this.width = 100;
 				} else {					
@@ -78,12 +78,15 @@
 </script>
 
 <style>
-.button-resource .button {
+.button-button .button {
 	background-color: initial!important;
 }
 
-.button-resource {
+.button-button {
     width:150px;
+}
+.text {
+    font-weight: bold;
 }
 .cooldown {
 	position: absolute;
