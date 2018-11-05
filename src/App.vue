@@ -2,19 +2,13 @@
 	<div id="app">
 		<div class="columns">
 			<div class="column">				
-				<Money v-bind:money="money"></Money>
-                Button Speed : {{ this.fillingSpeed }}x
-                <br/>                
-                <AddMoneyButton v-bind:cost="moneyButtonCost" @newMoneyButton="newMoneyButton"></AddMoneyButton>
+                <SongWriters :songWriters="songWriters" :nextSongWriter="nextSongWriter" @click="buyNextSongwriter"></SongWriters>
                 <br/>
-                <AddButtonButton v-bind:cost="buttonButtonCost" @newButtonButton="newButtonButton"></AddButtonButton>
-                <br/>
-                <DoubleButton v-bind:cost="doubleCost" @doubleButton="doubleButton"></DoubleButton>
-                <br/>
+                <NewSongButton @newSeed="newSeed"></NewSongButton>
 			</div>
 
-			<div class="column is-four-fifths" ref="listResources">
-                <ButtonResource top="0%" left="0%" cooldown="1500" v-bind:speed="fillingSpeed" v-bind:addMoney="addMoney"></ButtonResource>
+			<div class="column">
+                <Song :songWriters="songWriters" :seed="seed" :nextSongWriter="nextSongWriter"></Song>
 			</div>
 		</div>
 	</div>
@@ -22,15 +16,10 @@
 
 <script>
 
-	import Money from './components/Money.vue'
-    import ButtonResource from './components/ButtonResource.vue'
-    import AddMoneyButton from './components/AddMoneyButton.vue'
-    import AddButtonButton from './components/AddButtonButton.vue'
-    import DoubleButton from './components/DoubleButton.vue'
-    import ButtonButton from './components/ButtonButton.vue'
     
-    
-    import Vue from 'vue'		
+    import SongWriters from './components/SongWriters.vue'    
+    import Song from './components/Song.vue'    
+    import NewSongButton from './components/NewSongButton.vue'    
 
 	const TICK_RATE = 100; // Tick 10 times per second
 
@@ -38,78 +27,36 @@
 		name: 'App',
 		data() {
 			return {	
-				money: 10000,
-                moneyButtonCost: 5,
-                buttonButtonCost: 30,
-                doubleCost: 100,
-                fillingSpeed: 1,
+                // Resources
+				money: 100,
+                producers: 0,
+                songWriters: [
+                    "Catherine 1",
+                    "Jack 2",
+                    "Henrietta 3",
+                    "Robert 4",
+                    "No more"
+                ],
+                nextSongWriter: 4,
+
+                seed: "AAAAAA",
+
+                // Game loop
 				timeSinceLastTick: 0,
 				lastFrameTime: 0,
-				binders: [],
-                moneyButtons: [],
-                buttonButtons: [],
+				binders: [],                
 			}
 		},
-		methods: {	        
-            newButtonButton: function() {
-                if (this.money < this.buttonButtonCost) {
-                    return;
-                }
-                this.money -= this.buttonButtonCost;
-                this.buttonButtonCost = Math.floor(this.buttonButtonCost * 1.5);
-
-                const ComponentClass = Vue.extend(ButtonButton)
-                const instance = new ComponentClass({
-                    propsData: {
-                        cooldown:"5000",
-                        speed: this.fillingSpeed,
-                        newMoneyButton: this.newMoneyButton,
-                        top: `${Math.random() * 100}%`,
-                        left: `${Math.random() * 90}%`,
-                    }
-                })
-                instance.$mount();
-                instance.click();
-                this.$refs.listResources.appendChild(instance.$el)
+		methods: {	  
+            newSeed: function(seed) {
+                this.seed = seed;
+                window.speechSynthesis.cancel();
             },
-            doubleButton: function() {
-                if (this.money < this.doubleCost) {
-                    return;
-                }
-                this.money -= this.doubleCost;
-                this.doubleCost = Math.floor(this.doubleCost * 4);
-                this.fillingSpeed *= 2;
-            },         
-            newMoneyButton: function(paid = true) {
-                if (paid) {
-                    if (this.money < this.moneyButtonCost) {
-                        return;
-                    }
-                    this.money -= this.moneyButtonCost;
-                    this.moneyButtonCost = Math.floor(this.moneyButtonCost * 1.5);    
-                }
-                
-                const ComponentClass = Vue.extend(ButtonResource)
-                const instance = new ComponentClass({
-                    propsData: {
-                        cooldown:"1500",                        
-                        addMoney: this.addMoney,
-                        top: `${Math.random() * 100}%`,
-                        left: `${Math.random() * 90}%`,
-                    },
-                    computed: {
-                        speed: function() {
-                            return this.fillingSpeed;
-                        }
-                    }
-                })
-                instance.$mount();
-                instance.click();
-                this.$refs.listResources.appendChild(instance.$el)
-            },
-            addMoney: function() {
-                this.money++;
-            },
+            buyNextSongwriter: function() {
+                if (this.nextSongWriter < this.songWriters.length - 1) {
+                    this.nextSongWriter ++;
+                }                
+            },                 
 			bind: function(id, fn) {
 				this.binders.push({id: id, fn: fn});
 			},
@@ -146,13 +93,10 @@
 			window.bind = this.bind;
 			window.unbind = this.unbind;
 		},
-		components: {		
-			Money,
-            ButtonResource,
-            AddMoneyButton,
-            DoubleButton,
-            AddButtonButton,
-            ButtonButton,
+		components: {	
+            SongWriters,
+            Song,
+            NewSongButton
 		}
 	}
 </script>
@@ -162,12 +106,9 @@
 	/*font-family: 'Avenir', Helvetica, Arial, sans-serif;*/
 	/*-webkit-font-smoothing: antialiased;*/
 	/*-moz-osx-font-smoothing: grayscale;*/
-	text-align: center;
+	/*text-align: center;*/
 	/*color: #2c3e50;*/
 	margin-top: 60px;
-}
-.column {
-    height:700px;
-    position:relative;
+    margin-left: 60px;
 }
 </style>
