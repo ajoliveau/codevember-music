@@ -2,7 +2,7 @@
 	<div id="app">
 		<div class="columns">
 			<div class="column">	
-                Money : {{ money }}$			
+                <!-- Money : {{ money }}$			 -->
                 <br/>
                 <SongWriters :songWriters="songWriters" :nextSongWriter="nextSongWriter" @click="buyNextSongwriter"></SongWriters>
                 <br/>
@@ -65,7 +65,7 @@
                     // "Steve Mac",
                     "No more"
                 ],
-                nextSongWriter: 1,
+                nextSongWriter: 8,
                 seed: "AAAAAA",
                 hitStyle: 0,
                 styles: [

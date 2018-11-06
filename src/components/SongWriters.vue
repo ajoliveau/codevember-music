@@ -1,8 +1,9 @@
 <template>
     <div>
-        <div class="button" v-on:click="click">Buy next songwriter : {{this.nextSongWriterName}} (200$)</div>
+        <!-- <div class="button" v-on:click="click">Buy next songwriter : {{this.nextSongWriterName}} (200$)</div> -->
+        
+        <b>SongWriters : </b>
         <br/>
-        SongWriters : 
         <ul>
             <li v-for="(item, index) in this.songWriters.slice(0, this.nextSongWriter)">
                 <SongWriter :id="index" :name="item"></SongWriter>                

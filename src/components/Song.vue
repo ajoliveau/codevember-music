@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="lyrics">
-			<div class="button" v-on:click="$emit('sellSong')">Sell Song (+1000$)</div>
+			<!-- <div class="button" v-on:click="$emit('sellSong')">Sell Song (+1000$)</div> -->
 			<br/>
 			<br/>
 			<div class="button" v-if="singing" v-on:click="stopSing">Stop Singing</div>
@@ -180,8 +180,15 @@
 			},
 			sing() {		
 				this.singing = true;
+                const voices = this.synth.getVoices().filter(voice => voice.lang.includes('en'));
+                const voice = voices[Math.floor(Math.random() * voices.length)];
+                
 				this.singableLyrics.forEach((line) =>  {
-					this.synth.speak(new SpeechSynthesisUtterance(line));					
+                    let utterance = new SpeechSynthesisUtterance(line);
+                    let pitch = Math.random() * (1.5 - 0.8) + 0.8;
+                    utterance.pitch = pitch ;
+                    // utterance.voice = voice ;
+					this.synth.speak(utterance);					
 				})			
 				this.playMusic();				
 			},                  
