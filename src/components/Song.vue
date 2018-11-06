@@ -45,6 +45,7 @@
 				synth: window.speechSynthesis,
 				singing: false,
 				audio: null,
+
 				songs: [
 				{
 					file: "track1.mp3",
@@ -116,7 +117,45 @@
 					lyrics = lyrics.concat(SongData[i]);
 				}
 				return lyrics;
-			}
+			},
+            singableLyrics() {
+                let chorus = [];
+                let singableLyrics = [];
+                this.lyrics.text.forEach((verse) => {                    
+                    if (verse.type == 'chorus') {
+                        if (!chorus.length) {                            
+                            verse.text.forEach((line) =>  {
+                                const random = Math.random();
+                                if (chorus.length && random > 0.8) {
+                                    chorus[chorus.length - 1] += ' ' + line;
+                                }
+                                else if (chorus.length && random > 0.5) {
+                                    chorus[chorus.length - 1] += ', ' + line;
+                                }
+                                else {
+                                    chorus.push(line);                                    
+                                }
+                            });
+                        }                         
+                        singableLyrics = singableLyrics.concat(chorus);
+                    }
+                    else {
+                        verse.text.forEach((line) =>  {
+                            const random = Math.random();
+                            if (singableLyrics.length && random > 0.8) {
+                                singableLyrics[singableLyrics.length - 1] += ' ' + line;
+                            }
+                            else if (singableLyrics.length && random > 0.5) {
+                                singableLyrics[singableLyrics.length - 1] += ', ' + line;
+                            }
+                            else {
+                                singableLyrics.push(line);
+                            }
+                        });
+                    }
+                });                
+                return singableLyrics;
+            }
 		},
 		methods: {   
 			playMusic() {
@@ -141,20 +180,8 @@
 			},
 			sing() {		
 				this.singing = true;
-				this.lyrics.text.forEach((verse) =>  {
-					const random = Math.random();
-					if (random > 0.7) {
-						this.synth.speak(new SpeechSynthesisUtterance(verse.text.join(' ')));
-					} 
-					else if (random > 0.4) {
-						this.synth.speak(new SpeechSynthesisUtterance(verse.text.join(', ')));	
-					}
-					else {
-						verse.text.forEach((line) =>  {
-							this.synth.speak(new SpeechSynthesisUtterance(line));
-						});						
-					}
-					
+				this.singableLyrics.forEach((line) =>  {
+					this.synth.speak(new SpeechSynthesisUtterance(line));					
 				})			
 				this.playMusic();				
 			},                  
