@@ -16,10 +16,8 @@
             }
         },              
         methods: {                     
-            newSeed() {
-                const seed = Math.random().toString(36).substring(7);
-                console.log(seed);
-                this.$emit('newSeed', seed);                                
+            newSeed() {                                
+                this.$emit('newSeed');                                
             },            
         }
     }
@@ -27,5 +25,6 @@
 </script>
 
 <style>
+
 
 </style>

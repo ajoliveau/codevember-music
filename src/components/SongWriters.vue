@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="button" v-on:click="click">Buy next songwriter : {{this.nextSongWriterName}}</div>
+        <div class="button" v-on:click="click">Buy next songwriter : {{this.nextSongWriterName}} (200$)</div>
         <br/>
         SongWriters : 
         <ul>

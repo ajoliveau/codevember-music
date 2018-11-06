@@ -1,27 +1,14 @@
 <template>
-    <div>
-        [Chorus]
-        {{ lyrics.chorus.join("\n") }}
-
-        [Verse]
-        {{ lyrics.verses[0].join("\n")}}
-
-        [Chorus]
-
-        [Verse]
-        {{ lyrics.verses[1].join("\n")}}
-
-        [Chorus]
-
-        [Verse]
-        {{ lyrics.verses[2].join("\n")}}
-
-        [Chorus]
+    <div class="lyrics">
+        <Lyric v-for="(lyric, index) in lyrics.text" :skipTypeDisplay="lyrics.skipTypeDisplay" :key="index" :lyric="lyric" ></Lyric>
+        
     </div>    
 </template>
 
 
 <script>
+
+    import Lyric from './Lyric.vue'
 
     export default {
         name: 'Lyrics',
@@ -34,12 +21,15 @@
         data() {
             return {              
             }
-        },              
+        },
+        components: {
+            Lyric
+        }              
     }
 </script>
 
 <style>
 .lyrics {
-    white-space: pre-line;
+    /*white-space: pre-line;*/
 }
 </style>
